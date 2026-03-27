@@ -1,0 +1,48 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "doctor", "patient"] },
+        "avatar": { "type": "string" },
+        "specialty": { "type": "string" },
+        "blood": { "type": "string" },
+        "age": { "type": "integer" }
+      },
+      "required": ["id", "email", "name", "role"]
+    },
+    "appointments": {
+      "title": "Appointment",
+      "description": "Scheduled medical appointment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "time": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string", "enum": ["Upcoming", "Completed", "Cancelled", "Pending"] },
+        "notes": { "type": "string" }
+      },
+      "required": ["patientId", "doctorId", "date", "time", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User profile documents"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "appointments",
+      "description": "Appointment documents"
+    }
+  }
+}

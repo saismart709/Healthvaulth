@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - id: string (required) - User ID
+    //   - email: string (required) - User email
+    //   - name: string (required) - User full name
+    //   - role: string (required, enum: admin, doctor, patient) - User role
+    //   - avatar: string (optional) - User avatar URL
+    //   - specialty: string (optional) - Doctor's specialty
+    //   - blood: string (optional) - Patient's blood type
+    //   - age: number (optional) - Patient's age
+    //
+    // Collection: appointments
+    // Document ID: {appointmentId}
+    // Fields:
+    //   - patientId: string (required) - Patient's user ID
+    //   - patientName: string (required) - Patient's full name
+    //   - doctorId: string (required) - Doctor's user ID
+    //   - doctorName: string (required) - Doctor's full name
+    //   - date: string (required) - Appointment date
+    //   - time: string (required) - Appointment time
+    //   - status: string (required, enum: Upcoming, Completed, Cancelled, Pending) - Appointment status
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "k.saichakradhar20@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['id', 'email', 'name', 'role', 'avatar', 'specialty', 'blood', 'age']) &&
+             data.id is string && data.id.size() > 0 &&
+             data.email is string && isValidEmail(data.email) &&
+             data.name is string && data.name.size() > 0 &&
+             data.role in ['admin', 'doctor', 'patient'];
+    }
+
+    function isValidAppointment(data) {
+      return hasOnlyAllowedFields(['id', 'patientId', 'patientName', 'doctorId', 'doctorName', 'date', 'time', 'type', 'status', 'notes']) &&
+             data.patientId is string && data.patientId.size() > 0 &&
+             data.doctorId is string && data.doctorId.size() > 0 &&
+             data.status in ['Upcoming', 'Completed', 'Cancelled', 'Pending'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && (isOwner(userId) || isAdmin());
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) && (isOwner(userId) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidAppointment(request.resource.data);
+      allow update: if isAuthenticated() && isValidAppointment(request.resource.data);
+      allow delete: if isAdmin();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

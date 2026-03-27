@@ -1,0 +1,7 @@
+{
+  "name": "Remix: HealthVault",
+  "description": "A smart healthcare platform for managing patients, appointments, and medical records with AI assistance.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

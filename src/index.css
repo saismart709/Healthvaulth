@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0066FF;
+  --color-primary-dark: #0047CC;
+  --color-primary-light: #3385FF;
+  --color-primary-bg: #EEF4FF;
+  --color-teal-custom: #00C9A7;
+  --color-teal-bg: #E6FAF7;
+  --color-amber-custom: #FF8B00;
+  --color-amber-bg: #FFF4E0;
+  --color-red-custom: #FF3B3B;
+  --color-red-bg: #FFECEC;
+  --color-purple-custom: #7C3AED;
+  --color-purple-bg: #F0EBFF;
+  --color-green-custom: #00B37E;
+  --color-green-bg: #E6F9F3;
+  --color-sidebar: #0A0F1E;
+  --color-sidebar-border: rgba(255, 255, 255, 0.06);
+  --color-bg-custom: #F4F7FC;
+  --color-card-custom: #FFFFFF;
+  --color-text-custom: #0A0F1E;
+  --color-text-2: #4A5568;
+  --color-text-3: #9AA5B4;
+  --color-border-custom: #E8EDF5;
+}
+
+.dark {
+  --color-bg-custom: #0A0F1E;
+  --color-card-custom: #151B2D;
+  --color-text-custom: #FFFFFF;
+  --color-text-2: #A0AEC0;
+  --color-text-3: #718096;
+  --color-border-custom: #2D3748;
+  --color-primary-bg: rgba(0, 102, 255, 0.1);
+}
+
+:root {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --r: 14px;
+  --r-sm: 8px;
+  --sidebar-w: 220px;
+  --topbar-h: 60px;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-outfit);
+    background-color: var(--color-bg-custom);
+    color: var(--color-text-custom);
+    font-size: 14px;
+  }
+}
+
+@layer components {
+  .btn-blue {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 102, 255, 0.35);
+  }
+  
+  .btn-blue:hover {
+    background-color: var(--color-primary-dark);
+    box-shadow: 0 6px 28px rgba(0, 102, 255, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .stat-card {
+    background: var(--color-card-custom);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    box-shadow: 0 4px 16px rgba(10, 15, 30, 0.08);
+    border: 1px solid var(--color-border-custom);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform var(--transition), box-shadow var(--transition);
+    position: relative;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 48px rgba(10, 15, 30, 0.12);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-teal-custom));
+    border-radius: var(--r) var(--r) 0 0;
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+
+  .stat-card:hover::before {
+    opacity: 1;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--r-sm);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .nav-item.active {
+    background: rgba(0, 102, 255, 0.2);
+    color: white;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    background: var(--color-primary);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .card {
+    background: var(--color-card-custom);
+    border-radius: var(--r);
+    box-shadow: 0 4px 16px rgba(10, 15, 30, 0.08);
+    border: 1px solid var(--color-border-custom);
+    border-top: 2px solid transparent;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .card:hover {
+    border-top-color: var(--color-primary);
+  }
+
+  .pbar {
+    height: 6px;
+    background: var(--color-bg-custom);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .pbar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-text-3);
+  border-radius: 50%;
+  animation: typingBounce 1.2s infinite;
+  display: inline-block;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
