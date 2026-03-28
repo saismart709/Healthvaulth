@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 interface LoginProps {
-  onLogin: (user: User) => void;
+  onLogin: (user: User, isNew?: boolean) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onLogin }) => {
@@ -257,12 +257,15 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
           role: user.role,
           avatar: user.avatar
         });
+        onLogin(user, true);
+      } else {
+        onLogin(user);
       }
-
-      onLogin(user);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Google Login Error:', error);
-      alert('Failed to sign in with Google.');
+      const errorCode = error.code || 'unknown';
+      const errorMessage = error.message || 'An unknown error occurred';
+      alert(`Failed to sign in with Google.\nError: ${errorCode}\n${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -295,9 +298,13 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
       });
 
       alert('Account created successfully! You can now sign in.');
-      setIsRegistering(false);
-      setEmail(trimmedContact);
-      setPassword('');
+      onLogin({
+        id: firebaseUser.uid,
+        email: formattedEmail,
+        name: regName,
+        role: regRole,
+        avatar: regName.charAt(0).toUpperCase()
+      }, true);
     } catch (error: any) {
       console.error('Registration Error:', error);
       if (error.code === 'auth/operation-not-allowed') {
@@ -332,7 +339,6 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     if (demoUser) {
       onLogin(demoUser);
     } else {
-      // Create a mock user for demo purposes if not a standard demo account
       onLogin({
         id: 'demo-' + Math.random().toString(36).substr(2, 9),
         email: e,

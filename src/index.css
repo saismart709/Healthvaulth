@@ -1,48 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0066FF;
-  --color-primary-dark: #0047CC;
-  --color-primary-light: #3385FF;
-  --color-primary-bg: #EEF4FF;
-  --color-teal-custom: #00C9A7;
-  --color-teal-bg: #E6FAF7;
-  --color-amber-custom: #FF8B00;
-  --color-amber-bg: #FFF4E0;
-  --color-red-custom: #FF3B3B;
-  --color-red-bg: #FFECEC;
-  --color-purple-custom: #7C3AED;
-  --color-purple-bg: #F0EBFF;
-  --color-green-custom: #00B37E;
-  --color-green-bg: #E6F9F3;
-  --color-sidebar: #0A0F1E;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #60a5fa;
+  --color-primary-bg: #eff6ff;
+  --color-teal-custom: #10b981;
+  --color-teal-bg: #ecfdf5;
+  --color-amber-custom: #f59e0b;
+  --color-amber-bg: #fffbeb;
+  --color-red-custom: #ef4444;
+  --color-red-bg: #fef2f2;
+  --color-purple-custom: #8b5cf6;
+  --color-purple-bg: #f5f3ff;
+  --color-green-custom: #22c55e;
+  --color-green-bg: #f0fdf4;
+  --color-sidebar: #0f172a;
   --color-sidebar-border: rgba(255, 255, 255, 0.06);
-  --color-bg-custom: #F4F7FC;
-  --color-card-custom: #FFFFFF;
-  --color-text-custom: #0A0F1E;
-  --color-text-2: #4A5568;
-  --color-text-3: #9AA5B4;
-  --color-border-custom: #E8EDF5;
+  --color-bg-custom: #f8fafc;
+  --color-card-custom: #ffffff;
+  --color-text-custom: #0f172a;
+  --color-text-2: #475569;
+  --color-text-3: #94a3b8;
+  --color-border-custom: #e2e8f0;
 }
 
 .dark {
-  --color-bg-custom: #0A0F1E;
-  --color-card-custom: #151B2D;
-  --color-text-custom: #FFFFFF;
-  --color-text-2: #A0AEC0;
-  --color-text-3: #718096;
-  --color-border-custom: #2D3748;
-  --color-primary-bg: rgba(0, 102, 255, 0.1);
+  --color-bg-custom: #020617;
+  --color-card-custom: #0f172a;
+  --color-text-custom: #f8fafc;
+  --color-text-2: #94a3b8;
+  --color-text-3: #64748b;
+  --color-border-custom: #1e293b;
+  --color-primary-bg: rgba(37, 99, 235, 0.1);
 }
 
 :root {
-  --font-outfit: 'Outfit', sans-serif;
+  --font-outfit: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'DM Mono', monospace;
-  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --r: 14px;
-  --r-sm: 8px;
-  --sidebar-w: 220px;
-  --topbar-h: 60px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --r: 16px;
+  --r-sm: 10px;
+  --sidebar-w: 240px;
+  --topbar-h: 64px;
 }
 
 @layer base {

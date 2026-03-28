@@ -34,27 +34,19 @@ export const NearbyHospitals: React.FC = () => {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.5-flash",
         contents: "Find 5 hospitals nearby my current location. Provide their names and addresses.",
         config: {
-          tools: [{ googleMaps: {} }],
-          toolConfig: {
-            retrievalConfig: {
-              latLng: {
-                latitude: location.lat,
-                longitude: location.lng,
-              }
-            }
-          }
+          tools: [{ googleSearch: {} }],
         },
       });
 
       const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
       const hospitalData = chunks
-        .filter((chunk: any) => chunk.maps)
+        .filter((chunk: any) => chunk.web)
         .map((chunk: any) => ({
-          name: chunk.maps.title,
-          uri: chunk.maps.uri,
+          name: chunk.web.title,
+          uri: chunk.web.uri,
         }));
 
       if (hospitalData.length === 0) {
@@ -66,7 +58,7 @@ export const NearbyHospitals: React.FC = () => {
       }
     } catch (err) {
       console.error("Error fetching hospitals:", err);
-      setError("Failed to fetch nearby hospitals. Please try again later.");
+      setError(`Failed to fetch nearby hospitals. Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setLoading(false);
     }

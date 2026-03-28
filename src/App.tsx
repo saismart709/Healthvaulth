@@ -16,6 +16,8 @@ import { Analytics, Doctors, Prescriptions, Records, Vitals } from './components
 import { Modal } from './components/Modal';
 import { Toast } from './components/Toast';
 import { onAuthStateChanged, logout, auth } from './firebase';
+import { LandingPage } from './components/LandingPage';
+import { Onboarding } from './components/Onboarding';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,6 +27,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [toasts, setToasts] = useState<{ id: number; msg: string; type: any }[]>([]);
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [isOnboarding, setIsOnboarding] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>(DEMO_APPOINTMENTS);
   const [files, setFiles] = useState<HealthFile[]>(DEMO_FILES);
   const [prescriptions, setPrescriptions] = useState<Prescription[]>(DEMO_PRESCRIPTIONS);
@@ -97,14 +101,11 @@ export default function App() {
       prescriptions.forEach(rx => {
         if (rx.reminders?.includes(currentTime)) {
           addToast(`💊 Time to take ${rx.medication} (${rx.dosage})`, 'info');
-          
-          // Also add to notifications panel
-          // (In a real app, this would be persisted to a notifications collection)
         }
       });
     };
 
-    const interval = setInterval(checkReminders, 60000); // Check every minute
+    const interval = setInterval(checkReminders, 60000); 
     return () => clearInterval(interval);
   }, [user, prescriptions]);
 
@@ -215,13 +216,52 @@ export default function App() {
   }
 
   if (!user) {
+    if (!showLogin) {
+      return (
+        <LandingPage 
+          onGetStarted={() => setShowLogin(true)} 
+          onViewDemo={() => {
+            const demoPatient = {
+              id: 'demo-patient-1',
+              email: 'patient@healthvault.com',
+              name: 'John Anderson',
+              role: 'patient' as Role,
+              avatar: 'J'
+            };
+            handleLogin(demoPatient);
+          }} 
+        />
+      );
+    }
     return (
-      <>
-        <Login onLogin={handleLogin} />
+      <div className="animate-fade-in relative min-h-screen bg-bg-custom">
+        <button 
+          onClick={() => setShowLogin(false)}
+          className="absolute top-8 left-8 z-50 flex items-center gap-2 text-sm font-bold text-text-2 hover:text-primary transition-colors bg-white/80 dark:bg-card-custom/80 backdrop-blur-md px-4 py-2 rounded-xl border border-border-custom"
+        >
+          ← Back to Discovery
+        </button>
+        <Login onLogin={(u, isNew) => {
+          if (isNew) setIsOnboarding(true);
+          handleLogin(u);
+        }} />
         <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none">
           {toasts.map(t => <Toast key={t.id} msg={t.msg} type={t.type} onClose={() => removeToast(t.id)} />)}
         </div>
-      </>
+      </div>
+    );
+  }
+
+  if (isOnboarding) {
+    return (
+      <Onboarding 
+        userName={user.name} 
+        onComplete={(data) => {
+          console.log('Onboarding Data:', data);
+          setIsOnboarding(false);
+          addToast(`Your health profile is ready, ${user.name.split(' ')[0]}!`, 'success');
+        }} 
+      />
     );
   }
 
@@ -250,7 +290,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* Notifications Panel */}
       {showNotifications && (
         <div className="notif-panel absolute top-12 right-6 w-80 bg-white rounded-xl border border-border-custom shadow-2xl z-[200] animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="notif-head p-4 border-b border-border-custom flex items-center justify-between">
