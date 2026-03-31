@@ -264,8 +264,31 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
     } catch (error: any) {
       console.error('Google Login Error:', error);
       const errorCode = error.code || 'unknown';
-      const errorMessage = error.message || 'An unknown error occurred';
-      alert(`Failed to sign in with Google.\nError: ${errorCode}\n${errorMessage}`);
+      const errorMessage = error.message || '';
+      
+      if (errorCode === 'auth/unauthorized-domain') {
+        setFirebaseError(
+          <span>
+            Google Sign-In is blocked because <strong>{window.location.hostname}</strong> is not an authorized domain. 
+            To fix this, go to the <a href="https://console.firebase.google.com/project/gen-lang-client-0294188454/authentication/settings" target="_blank" rel="noopener noreferrer" className="underline font-bold text-primary">Firebase Console</a>, go to <strong>Authentication &gt; Settings &gt; Authorized domains</strong>, and add <strong>{window.location.hostname}</strong>.
+          </span>
+        );
+      } else if (errorCode.includes('identity-toolkit-api') || errorMessage.includes('identitytoolkit.googleapis.com')) {
+        const match = errorMessage.match(/https:\/\/console\.developers\.google\.com[^\s]+|https:\/\/console\.cloud\.google\.com[^\s]+/);
+        const url = match ? match[0].replace(/-then-retry.*|-if-you-enabled.*/, '') : 'https://console.cloud.google.com/apis/api/identitytoolkit.googleapis.com/overview';
+        
+        setFirebaseError(
+          <span>
+            Firebase Authentication is not enabled for this API Key. 
+            Please <a href={url} target="_blank" rel="noopener noreferrer" className="underline font-bold text-primary">click here to enable the Identity Toolkit API</a> in your Google Cloud Console. Note: It may take a couple of minutes to propagate after enabling.
+          </span>
+        );
+      } else if (errorCode === 'auth/popup-closed-by-user') {
+        // User closed the popup, normally we can just ignore or show a small hint
+        setFirebaseError('Sign-in popup was closed before completing. Please try again.');
+      } else {
+        setFirebaseError(`Failed to sign in with Google: ${errorMessage}`);
+      }
     } finally {
       setIsLoading(false);
     }

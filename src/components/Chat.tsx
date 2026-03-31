@@ -51,6 +51,17 @@ export const Chat: React.FC<ChatProps> = ({ user }) => {
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsTyping(true);
 
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY.includes('MY_GEMINI_API_KEY') || process.env.GEMINI_API_KEY.includes('YOUR_API_KEY_HERE')) {
+      setTimeout(() => {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: "⚠️ **Configuration Required**\n\nAI features are disabled. Please add your `GEMINI_API_KEY` to the `.env` file at the root of the project and restart your server." 
+        }]);
+        setIsTyping(false);
+      }, 500);
+      return;
+    }
+
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
       

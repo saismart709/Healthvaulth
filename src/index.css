@@ -42,7 +42,12 @@
   --r: 16px;
   --r-sm: 10px;
   --sidebar-w: 240px;
+  --sidebar-collapsed-w: 88px;
   --topbar-h: 64px;
+}
+
+.sidebar-collapsed {
+  --sidebar-w: var(--sidebar-collapsed-w);
 }
 
 @layer base {

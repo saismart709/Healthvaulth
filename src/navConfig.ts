@@ -36,7 +36,6 @@ export const NAV_CONFIG: Record<Role, NavSection[]> = {
     },
     {
       section: 'System', items: [
-        { id: 'chat', icon: '🤖', label: 'AI Assistant' },
         { id: 'settings', icon: '⚙️', label: 'Settings' },
       ]
     },
@@ -58,7 +57,6 @@ export const NAV_CONFIG: Record<Role, NavSection[]> = {
       section: 'Tools', items: [
         { id: 'prescriptions', icon: '💊', label: 'Prescriptions' },
         { id: 'files', icon: '📁', label: 'Files' },
-        { id: 'chat', icon: '🤖', label: 'AI Assistant' },
       ]
     },
     {
@@ -90,7 +88,6 @@ export const NAV_CONFIG: Record<Role, NavSection[]> = {
     {
       section: 'Support', items: [
         { id: 'hospitals', icon: '🏥', label: 'Nearby Hospitals' },
-        { id: 'chat', icon: '🤖', label: 'AI Assistant' },
         { id: 'settings', icon: '⚙️', label: 'Settings' },
       ]
     },

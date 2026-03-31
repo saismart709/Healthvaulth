@@ -23,6 +23,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [activePage, setActivePage] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [toasts, setToasts] = useState<{ id: number; msg: string; type: any }[]>([]);
@@ -266,7 +267,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-screen min-h-screen bg-bg-custom">
+    <div className={`app-screen min-h-screen bg-bg-custom ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <Sidebar 
         navConfig={NAV_CONFIG[user.role]} 
         activePage={activePage} 
@@ -274,6 +275,8 @@ export default function App() {
         user={user} 
         onLogout={handleLogout}
         isOpen={isSidebarOpen}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       
       <div className={`main-area md:ml-[var(--sidebar-w)] flex flex-col min-h-screen transition-all duration-300`}>

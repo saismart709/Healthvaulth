@@ -31,11 +31,17 @@ export const NearbyHospitals: React.FC = () => {
     setLoading(true);
     setError(null);
 
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY.includes('MY_GEMINI_API_KEY') || process.env.GEMINI_API_KEY.includes('YOUR_API_KEY_HERE')) {
+      setError("AI features disabled: Please add your GEMINI_API_KEY to the .env file and restart the server.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: "Find 5 hospitals nearby my current location. Provide their names and addresses.",
+        contents: `Find 5 hospitals nearby the geographic coordinates: Latitude ${location.lat}, Longitude ${location.lng}. Provide their names and addresses.`,
         config: {
           tools: [{ googleSearch: {} }],
         },
